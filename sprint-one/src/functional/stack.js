@@ -3,28 +3,19 @@ var Stack = function() {
 
   // Use an object with numeric keys to store values
   var storage = {};
+  let largest = 0;
 
   // Implement the methods below
   someInstance.push = function(value) {
-    let largest = 0;
-    for (let key in storage) {
-      if (key > largest) {
-        largest = key;
-      }
-    }
-    storage[largest + 1] = value;
+    largest++;
+    storage[largest] = value;
   };
 
   someInstance.pop = function() {
-    let largest = 0;
-    for (let key in storage) {
-      if (key > largest) {
-        largest = key;
-      }
-    }
-
     let value = storage[largest];
     delete storage[largest];
+
+    largest--;
     return value;
   };
 
