@@ -3,6 +3,7 @@ var Queue = function() {
   // but try not not reference your old code in writing the new style.
   var newQueue = Object.create(queueMethods);
   newQueue.storage = {};
+  newQueue.largest = 0;
   return newQueue;
 };
 
@@ -11,24 +12,20 @@ queueMethods.size = function() {
   return Object.keys(this.storage).length;
 };
 queueMethods.enqueue = function(value) {
-  var largest = 0;
-  for (let key in this.storage) {
-    if (key > largest) {
-      largest = key;
-    }
-  }
-  this.storage[largest + 1] = value;
+  this.storage[this.largest] = value;
+  this.largest++;
 };
 
 queueMethods.dequeue = function() {
-  var smallest = Number.MAX_SAFE_INTEGER;
-  for (let key in this.storage) {
-    if (key < smallest) {
-      smallest = key;
+  if (Object.keys(this.storage).length > 0) {
+    let value = this.storage[0];
+    delete this.storage[0];
+    for (let key in this.storage) {
+      this.storage[key - 1] = this.storage[key];
     }
+    this.largest--;
+    delete this.storage[this.largest];
+    return value;
   }
-  let value = this.storage[smallest];
-  delete this.storage[smallest];
-  return value;
 };
 
