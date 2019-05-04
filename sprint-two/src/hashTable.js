@@ -1,7 +1,8 @@
 
 
-var HashTable = function() {
-  this._limit = 8;
+var HashTable = function(capacity) {
+  this._limit = capacity ? capacity : 8;
+  this._size = 0;
   this._storage = LimitedArray(this._limit);
 };
 
@@ -21,10 +22,35 @@ HashTable.prototype.insert = function(k, v) {
   }
   // If there is no bucket at index, start a new bucket
   if (!this._storage.get(index)) {
+    // a new bucket
     this._storage.set(index, [[k, v]]);
+    this._size++;
   } else {
     // if there is a bucket, add to it
     this._storage.get(index).push([k, v]);
+  }
+
+  if ((this._size / this._limit) >= .75) {
+    this.resize(2);
+  }
+};
+
+HashTable.prototype.resize = function(factor) {
+  let oldLimit = this._limit;
+  let oldStorage = this._storage;
+
+  this._limit *= factor;
+  this._size = 0;
+  this._storage = LimitedArray(this._limit);
+
+  for (let index = 0; index < oldLimit; index++){
+    let bucket = oldStorage.get(index);
+    if (bucket) {
+      for (let pair of bucket) {
+        // this.insert will update this._size
+        this.insert(pair[0], pair[1]);
+      }
+    }
   }
 };
 
@@ -47,6 +73,7 @@ HashTable.prototype.remove = function(k) {
     // if there is one pair, just set undefined
     if (bucket.length === 1) {
       this._storage.set(index, undefined);
+      this._size--;
     } else { // if there are more than one pair in the bucket
       for (var i = 0; i < bucket.length; i++) {
         // find the pair that has the key 'k'
@@ -56,6 +83,10 @@ HashTable.prototype.remove = function(k) {
         }
       }
     }
+  }
+
+  if ((this._size / this._limit) <= .25) {
+    this.resize((1/2));
   }
 };
 
