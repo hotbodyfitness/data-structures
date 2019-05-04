@@ -12,7 +12,7 @@ var extend = function(output, input) {
   for(let key in input) {
     output[key] = input[key];
   }
-}
+};
 
 var treeMethods = {};
 
@@ -23,14 +23,17 @@ treeMethods.addChild = function(value) {
 };
 
 treeMethods.removeFromParent = function() {
-  var kids = this.parent.children;
-  for (let i = 0; i < kids.length; i++) {
-    if (kids[i].value === this.value) {
-      kids.splice(i, 1);
-      break;
+  var index = this.parent.findChild(this.value);
+  this.parent.children.splice(index, 1);
+  this.parent = null;
+};
+
+treeMethods.findChild = function(target) { // only used in the above function
+  for (let i = 0; i < this.children.length; i++) {
+    if (this.children[i].value === target) {
+      return i;
     }
   }
-  this.parent = null;
 };
 
 treeMethods.contains = function(target) {
@@ -38,25 +41,21 @@ treeMethods.contains = function(target) {
 
   if (target === this.value) {
     found = true;
-  } else if (this.children.length > 0) {
-    this.children.forEach(child => {
-       found = found || child.contains(target);
-    });
-    return found;
   }
+
+  this.children.forEach(child => {
+    found = found || child.contains(target);
+  });
+
   return found;
 };
 
-// treeMethods.find = function(target) {
-//   for (let i = 0; i < this.children.length; i++) {
-//     if (this.children[i].value === target) {
-//       return i;
-//     }
-//   }
-//   return -1;
-// };
-
-
+treeMethods.traverse = function(callback) {
+  callback(this.value);
+  this.children.forEach(child => {
+    child.traverse(callback);
+  });
+};
 
 /*
  * Complexity: What is the time complexity of the above functions?
