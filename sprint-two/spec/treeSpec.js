@@ -41,4 +41,9 @@ describe('tree', function() {
     expect(tree.contains(8)).to.equal(true);
   });
 
+  it('should assign a value to the root node', function () {
+    var tree2 = Tree(10);
+    expect(tree2.value).to.equal(10);
+  });
+
 });

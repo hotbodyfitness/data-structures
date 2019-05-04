@@ -68,4 +68,12 @@ describe('graph', function() {
     expect(graph.hasEdge(3, 5)).to.equal(true);
     expect(graph.hasEdge(5, 5)).to.equal(true);
   });
+
+  it('should not overwrite existing nodes', function() {
+    graph.addNode(2);
+    graph.addNode(3);
+    graph.addEdge(2, 3);
+    graph.addNode(2);
+    expect(graph.hasEdge(2, 3)).to.equal(true);
+  });
 });

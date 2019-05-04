@@ -73,4 +73,8 @@ describe('hashTable', function() {
     hashTable.remove('Mr.');
     expect(hashTable._limit).to.equal(8);
   });
+
+  it('should not throw an error when removing non-existant keys', function() {
+    expect(function () {hashTable.remove('banana')}).to.not.throw();
+  });
 });
