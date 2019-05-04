@@ -28,31 +28,34 @@ var LinkedList = function() {
   };
 
   list.removeHead = function() {
-    if (list.head !== null){
-      var value = list.head.value;
+    var value = list.removeNode(list.head);
 
-      if (list.head === list.tail) {
-        list.head = null;
-        list.tail = null;
-      } else {
-        list.head = list.head.next;
-        list.head.previous = null;
-      }
-
-      return value;
+    if (list.head !== list.tail) {
+      list.head = list.head.next;
+      list.head.previous = null;
     }
+
+    return value;
   };
 
   list.removeTail = function() {
-    if (list.tail !== null) {
-      var value = list.tail.value;
+    var value = list.removeNode(list.tail);
+
+    if (list.head !== list.tail) {
+      list.tail = list.tail.previous;
+      list.tail.next = null;
+    }
+
+    return value;
+  };
+
+  list.removeNode = function(node) {
+    if (node !== null) {
+      var value = node.value;
 
       if (list.head === list.tail) {
         list.head = null;
         list.tail = null;
-      } else {
-        list.tail = list.tail.previous;
-        list.tail.next = null;
       }
 
       return value;
